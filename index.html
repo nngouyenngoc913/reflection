@@ -100,3 +100,13 @@
             document.getElementById('modalMeta').innerHTML = `<h2 class="text-2xl font-black">${p.title}</h2><p class="text-slate-500 mt-2">${p.description}</p>`;
             document.getElementById('videoModal').style.display = 'block';
         }
+
+        function closeModal() {
+            document.getElementById('videoModal').style.display = 'none';
+            document.getElementById('modalContent').innerHTML = '';
+        }
+
+        window.onload = renderProjects;
+    </script>
+</body>
+</html>
