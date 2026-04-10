@@ -3,150 +3,184 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nancy Nguyen | Portfolio 2026</title>
+    <title>Nancy Nguyen | Chat Reflection</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        html { scroll-behavior: smooth; }
-        .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.98); }
-        .glass-nav { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+        .chat-bubble { max-width: 85%; animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .typing-dot { width: 6px; height: 6px; background: #94a3b8; border-radius: 50%; animation: bounce 1.4s infinite ease-in-out; }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
     </style>
 </head>
-<body class="bg-white text-slate-900 selection:bg-blue-100">
+<body class="bg-slate-50 h-screen flex flex-col font-sans overflow-hidden">
 
-    <nav class="sticky top-0 z-50 glass-nav border-b border-slate-100">
-        <div class="max-w-6xl mx-auto px-6 h-16 flex justify-between items-center">
-            <span class="text-lg font-bold tracking-tighter uppercase">Nancy Nguyen</span>
-            <div class="hidden md:flex space-x-8 text-xs font-bold uppercase tracking-widest text-slate-500">
-                <a href="#projects" class="hover:text-blue-600 transition">Flow of Work</a>
-                <a href="#reflection" class="hover:text-blue-600 transition">Reflection</a>
-                <button onclick="addNewPost()" class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition">+ New Post</button>
+    <header class="bg-white border-b border-slate-200 px-6 py-4 flex justify-between items-center shrink-0 z-10 shadow-sm">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold shadow-lg">NN</div>
+            <div>
+                <h1 class="text-sm font-bold leading-none uppercase tracking-tight">Nancy Nguyen</h1>
+                <span class="text-[10px] text-green-500 font-bold uppercase tracking-widest">Digital Reflection Active</span>
             </div>
         </div>
-    </nav>
-
-    <header class="max-w-6xl mx-auto px-6 py-24 text-center">
-        <span class="text-blue-600 font-bold text-sm tracking-widest uppercase">Ops & Automation Specialist</span>
-        <h1 class="text-5xl font-black mt-4 mb-6 tracking-tight">Flow of Work Ecosystem</h1>
-        <p class="text-slate-500 max-w-2xl mx-auto text-lg leading-relaxed">
-            Optimizing **AR Reconciliation, Ledger & Reporting** through Python and n8n.
-            Transforming manual processes into automated, scalable workflows.
-        </p>
+        <div class="flex gap-4">
+            <input type="password" id="api-key" placeholder="OpenAI Key for AI Mode" 
+                   class="hidden md:block text-xs p-2 border border-slate-200 rounded-lg outline-none focus:border-blue-500 w-48 transition-all">
+        </div>
     </header>
 
-    <section id="projects" class="max-w-6xl mx-auto px-6 py-12">
-        <h2 class="text-2xl font-bold mb-8 border-l-4 border-blue-600 pl-4">Technical Solutions</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8" id="video-grid"></div>
-    </section>
-
-    <section id="reflection" class="max-w-6xl mx-auto px-6 py-20 border-t border-slate-100 bg-slate-50/50">
-        <div class="mb-12">
-            <h2 class="text-3xl font-bold tracking-tight">Flow of Reflection</h2>
-            <p class="text-slate-500 mt-1">Strategic insights on Tax, AI, and Ledger Logic.</p>
+    <main id="chat-window" class="flex-1 overflow-y-auto p-4 md:p-8 space-y-6">
+        <div class="chat-bubble bg-white p-4 rounded-2xl rounded-tl-none border border-slate-100 shadow-sm text-slate-700">
+            Chào bạn! I'm Nancy's Digital Reflection. 👋
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8" id="reflection-grid"></div>
-    </section>
-
-    <div id="videoModal" class="modal" onclick="closeModal()">
-        <div class="max-w-4xl mx-auto mt-20 p-6 bg-white shadow-2xl rounded-2xl" onclick="event.stopPropagation()">
-            <div id="modalContent" class="aspect-video bg-slate-100 rounded-lg overflow-hidden"></div>
-            <div id="modalMeta" class="mt-6"></div>
-            <button onclick="closeModal()" class="mt-4 text-sm font-bold text-slate-400 uppercase tracking-widest hover:text-red-500">Close Preview</button>
+        <div class="chat-bubble bg-white p-4 rounded-2xl rounded-tl-none border border-slate-100 shadow-sm text-slate-700">
+            I demonstrate the <strong>Flow of Work</strong>—a gallery of automation systems, communication tools, and strategic reflections born from my experience in Accounting & Ops.
         </div>
-    </div>
+        
+        <div class="flex flex-wrap gap-2 chat-bubble" id="main-menu">
+            <button onclick="showWork()" class="px-4 py-2 bg-blue-50 text-blue-600 rounded-full text-xs font-bold border border-blue-100 hover:bg-blue-600 hover:text-white transition">I. Technical Solutions</button>
+            <button onclick="showReflection()" class="px-4 py-2 bg-blue-50 text-blue-600 rounded-full text-xs font-bold border border-blue-100 hover:bg-blue-600 hover:text-white transition">II. Flow of Reflection</button>
+            <button onclick="showContact()" class="px-4 py-2 bg-blue-50 text-blue-600 rounded-full text-xs font-bold border border-blue-100 hover:bg-blue-600 hover:text-white transition">III. Collaboration</button>
+        </div>
+    </main>
+
+    <footer class="p-4 bg-white border-t border-slate-200 shrink-0">
+        <div class="max-w-4xl mx-auto flex gap-4">
+            <input type="text" id="user-input" placeholder="Ask about AR Reconciliation, Python, or n8n..." 
+                   class="flex-1 p-3 bg-slate-100 border-none rounded-xl outline-none focus:ring-2 focus:ring-blue-500 text-sm transition-all"
+                   onkeypress="if(event.key === 'Enter') handleInput()">
+            <button onclick="handleInput()" class="bg-blue-600 text-white px-6 py-2 rounded-xl font-bold text-sm hover:bg-blue-700 shadow-md transition">Send</button>
+        </div>
+    </footer>
 
     <script>
-        // 1. DATA: FLOW OF WORK (VIDEOS)
-        const videoProjects = [
-            { 
-                title: "HR: Invoices Extraction", 
-                description: "Automated extraction of multiple invoices into ledger-ready formats using Python.", 
-                youtube: "https://www.youtube.com/embed/DA8bWbdnMV8", 
-                tag: "Invoices" 
-            },
-            { 
-                title: "Communication App", 
-                description: "Structured conversation system for professional clarity and English accuracy.", 
-                youtube: "https://www.youtube.com/embed/4uZQ1sfjzUA", 
-                tag: "Communication" 
-            },
-            { 
-                title: "Email Tracking & IFRS", 
-                description: "AI-driven mapping of operational mail flow to IFRS standards using n8n and OCR agents.", 
-                youtube: "https://www.youtube.com/embed/3UvaXQvPZXQ", 
-                tag: "Mailing" 
-            }
+        const chatWindow = document.getElementById('chat-window');
+
+        // --- DATA: FLOW OF WORK ---
+        const projectData = [
+            { title: "Invoice Extraction", desc: "Python-based ledger automation for bulk invoice processing.", video: "DA8bWbdnMV8", tag: "Python" },
+            { title: "Communication App", desc: "Systematic structure for professional English clarity.", video: "4uZQ1sfjzUA", tag: "App" },
+            { title: "Email Tracking & IFRS", desc: "n8n Agentic system mapping mail flow to IFRS standards.", video: "3UvaXQvPZXQ", tag: "n8n" }
         ];
 
-        // 2. DATA: FLOW OF REFLECTION (BLOG)
-        const defaultPosts = [
-            { title: "KPMG Tax Case Study", url: "https://trangtaichinhketoan.substack.com/p/kpmg-tax-case-study", content: "Phân tích các tình huống thực tế về thuế từ KPMG.", date: "15/05/2024" },
-            { title: "Ledger Logic", url: "https://trangtaichinhketoan.substack.com/p/ledger-logic", content: "Khám phá bản chất của hệ thống ghi chép kép.", date: "10/05/2024" },
-            { title: "AI Improvement", url: "https://trangtaichinhketoan.substack.com/p/ai-improvement", content: "Ứng dụng AI tối ưu hóa dữ liệu Excel.", date: "05/05/2024" },
-            { title: "Dictionary for Fun", url: "https://trangtaichinhketoan.substack.com/p/dictionary-for-fun", content: "Thuật ngữ kế toán tiếng Anh qua góc nhìn hài hước.", date: "01/05/2024" }
+        // --- DATA: FLOW OF REFLECTION ---
+        const blogPosts = [
+            { title: "KPMG Tax Case Study", url: "https://trangtaichinhketoan.substack.com/p/kpmg-tax-case-study", content: "Analysis of complex tax risk management and finalization cases.", date: "15/05/2024" },
+            { title: "Ledger Logic", url: "https://trangtaichinhketoan.substack.com/p/ledger-logic", content: "The logic behind double-entry systems and scientific ledger control.", date: "10/05/2024" },
+            { title: "AI Improvement", url: "https://trangtaichinhketoan.substack.com/p/ai-improvement", content: "Using AI to optimize Excel data and financial report analysis.", date: "05/05/2024" },
+            { title: "Dictionary for Fun", url: "https://trangtaichinhketoan.substack.com/p/dictionary-for-fun", content: "Accounting English (IFRS/VAS) simplified with a humorous twist.", date: "01/05/2024" }
         ];
 
-        let blogPosts = JSON.parse(localStorage.getItem('nancy_reflections')) || defaultPosts;
-
-        // 3. RENDER FUNCTIONS
-        function init() {
-            renderVideos();
-            renderReflections();
-        }
-
-        function renderVideos() {
-            const container = document.getElementById('video-grid');
-            container.innerHTML = videoProjects.map((p, i) => `
-                <div onclick="openModal(${i})" class="group cursor-pointer bg-white border border-slate-100 p-6 rounded-2xl transition-all hover:shadow-lg">
-                    <span class="text-[10px] font-black uppercase tracking-widest text-blue-500">${p.tag}</span>
-                    <h3 class="text-lg font-bold mt-2 group-hover:text-blue-600">${p.title}</h3>
-                    <p class="text-slate-500 text-xs mt-3 leading-relaxed">${p.description}</p>
+        // --- CORE UI ---
+        function addMessage(content, isUser = false) {
+            const div = document.createElement('div');
+            div.className = isUser ? 'flex justify-end' : 'flex justify-start';
+            div.innerHTML = `
+                <div class="chat-bubble ${isUser ? 'bg-blue-600 text-white rounded-tr-none shadow-md' : 'bg-white text-slate-700 rounded-tl-none border border-slate-100 shadow-sm'} p-4 rounded-2xl">
+                    ${content}
                 </div>
-            `).join('');
+            `;
+            chatWindow.appendChild(div);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
         }
 
-        function renderReflections() {
-            const container = document.getElementById('reflection-grid');
-            container.innerHTML = blogPosts.map((post) => `
-                <a href="${post.url}" target="_blank" class="block bg-white p-8 rounded-2xl border border-slate-100 hover:border-blue-200 transition-all group">
-                    <span class="text-xs text-slate-400 font-medium">${post.date}</span>
-                    <h3 class="text-xl font-bold mt-2 group-hover:text-blue-600">${post.title}</h3>
-                    <p class="text-slate-500 mt-4 text-sm line-clamp-2">${post.content}</p>
-                </a>
-            `).join('');
+        function showTyping() {
+            const div = document.createElement('div');
+            div.id = 'typing';
+            div.innerHTML = `<div class="chat-bubble bg-white p-4 rounded-2xl rounded-tl-none border border-slate-100 flex gap-1"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>`;
+            chatWindow.appendChild(div);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
         }
 
-        // 4. FUNCTIONALITY: MODAL & NEW POST
-        function openModal(index) {
-            const p = videoProjects[index];
-            document.getElementById('modalContent').innerHTML = `<iframe width="100%" height="100%" src="${p.youtube}" frameborder="0" allowfullscreen></iframe>`;
-            document.getElementById('modalMeta').innerHTML = `<h2 class="text-2xl font-black">${p.title}</h2><p class="text-slate-500 mt-2">${p.description}</p>`;
-            document.getElementById('videoModal').style.display = 'block';
+        // --- NAVIGATION ACTIONS ---
+        function showWork() {
+            addMessage("I'd like to see your Technical Solutions.", true);
+            showTyping();
+            setTimeout(() => {
+                document.getElementById('typing').remove();
+                addMessage("Here is my <strong>Technical Solution Gallery</strong>. These represent my thoughts on automating core finance operations:");
+                let grid = `<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">`;
+                projectData.forEach(p => {
+                    grid += `
+                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
+                            <iframe class="w-full aspect-video rounded-lg mb-2 shadow-sm" src="https://www.youtube.com/embed/${p.video}" frameborder="0" allowfullscreen></iframe>
+                            <p class="font-bold text-xs text-blue-600 uppercase tracking-tighter">${p.tag}</p>
+                            <p class="font-bold text-sm text-slate-800">${p.title}</p>
+                            <p class="text-[10px] text-slate-500 mt-1">${p.desc}</p>
+                        </div>
+                    `;
+                });
+                grid += `</div>`;
+                addMessage(grid);
+            }, 800);
         }
 
-        function closeModal() {
-            document.getElementById('videoModal').style.display = 'none';
-            document.getElementById('modalContent').innerHTML = '';
+        function showReflection() {
+            addMessage("Show me your Flow of Reflection.", true);
+            showTyping();
+            setTimeout(() => {
+                document.getElementById('typing').remove();
+                addMessage("These are my published insights on Substack, covering Tax, Ledger Logic, and AI:");
+                let list = `<div class="flex flex-col gap-3 mt-2">`;
+                blogPosts.forEach(post => {
+                    list += `
+                        <a href="${post.url}" target="_blank" class="block p-4 bg-white border border-slate-200 rounded-xl hover:border-blue-500 hover:shadow-md transition-all group">
+                            <span class="text-[10px] font-bold text-slate-400 uppercase">${post.date}</span>
+                            <h3 class="font-bold text-sm text-slate-900 group-hover:text-blue-600">${post.title}</h3>
+                            <p class="text-[11px] text-slate-500 mt-1 line-clamp-2">${post.content}</p>
+                        </a>
+                    `;
+                });
+                list += `</div>`;
+                addMessage(list);
+            }, 800);
         }
 
-        function addNewPost() {
-            const title = prompt("Enter Post Title:");
-            if (!title) return;
-            const url = prompt("Enter Substack URL:", "https://trangtaichinhketoan.substack.com/p/...");
-            const content = prompt("Enter short description:");
-            
-            const newPost = {
-                title,
-                url: url || "#",
-                content: content || "No description provided.",
-                date: new Date().toLocaleDateString('en-GB')
-            };
-
-            blogPosts.unshift(newPost);
-            localStorage.setItem('nancy_reflections', JSON.stringify(blogPosts));
-            renderReflections();
+        function showContact() {
+            addMessage("How can we collaborate?", true);
+            setTimeout(() => {
+                addMessage("Nancy is currently active in the <strong>Freelance market</strong> and happy to connect! These projects are reflections of her professional experience—designed to show her achievements and strategic thinking. <br><br>Feel free to reach out via LinkedIn or your preferred freelancing platform.");
+            }, 500);
         }
 
-        window.onload = init;
+        // --- CHAT LOGIC ---
+        async function handleInput() {
+            const input = document.getElementById('user-input');
+            const apiKey = document.getElementById('api-key').value;
+            const text = input.value.trim();
+            if (!text) return;
+
+            addMessage(text, true);
+            input.value = '';
+
+            if (apiKey) {
+                showTyping();
+                try {
+                    const res = await fetch('https://api.openai.com/v1/chat/completions', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+                        body: JSON.stringify({
+                            model: "gpt-3.5-turbo",
+                            messages: [
+                                {role: "system", content: "You are Nancy Nguyen's Portfolio AI. Nancy is an Ops & Automation Specialist (AR Reconciliation, Ledger, Python, n8n). Her site 'Reflection' shows conceptual yet real-world projects based on her work experience. Be concise and professional."},
+                                {role: "user", content: text}
+                            ]
+                        })
+                    });
+                    const data = await res.json();
+                    document.getElementById('typing').remove();
+                    addMessage(data.choices[0].message.content);
+                } catch (err) {
+                    document.getElementById('typing').remove();
+                    addMessage("My AI connection is a bit unstable. Please check your API key!");
+                }
+            } else {
+                addMessage("To unlock my full AI chat capabilities, please enter an OpenAI Key in the header. Otherwise, use the menu above to explore my work!");
+            }
+        }
     </script>
 </body>
 </html>
